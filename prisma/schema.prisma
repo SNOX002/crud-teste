@@ -1,0 +1,34 @@
+generator client {
+  provider = "prisma-client-js"
+}
+//npx prisma migrate dev --name init
+//npx prisma db pull
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Usuario {
+  id String     @id @default(uuid())
+  email         String  @unique
+  name          String?
+  password      String
+  alugueis    Aluguel[]
+}
+model livro {
+  id            String  @id @default(uuid())
+  title         String  @unique
+  author        String  //Saber se o livro está disponível
+  alugueis    Aluguel[]
+}
+
+model Aluguel {
+  id          String   @id @default(uuid())
+  user        Usuario  @relation(fields: [userID], references: [id])
+  userID      String
+  book        livro    @relation(fields: [bookID], references: [id])
+  bookID      String
+  startDate   DateTime @default(now())
+  returnDate  DateTime?
+  available   Boolean  @default(true)
+}
